@@ -95,17 +95,6 @@ android {
         }
     }
 
-    productFlavors {
-        mobile {
-            minSdkVersion 16
-        }
-        tv {
-            minSdkVersion 21
 
-            dependencies {
-                tvCompile "com.android.support:leanback-v17:${supportLibVersion}"
-            }
-        }
-    }
 
 }
