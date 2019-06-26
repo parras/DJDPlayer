@@ -43,9 +43,10 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import androidx.appcompat.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import java.io.File;
 import java.util.HashSet;
@@ -1182,7 +1183,7 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
                 getPendingIntentForAction(PAUSE_ACTION));
         builder.addAction(android.R.drawable.ic_media_next, getResources().getString(R.string.next),
                 getPendingIntentForAction(NEXT_ACTION));
-        builder.setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
+        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
 
         enrichNotification(builder);
 
@@ -1199,7 +1200,7 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder
                     .setCategory(Notification.CATEGORY_TRANSPORT)
-                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         }
     }
 

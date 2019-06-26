@@ -25,7 +25,7 @@ import android.content.IntentFilter;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
 import android.os.Build;
-import androidx.appcompat.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import nu.staldal.djdplayer.MediaPlaybackService;
 import nu.staldal.djdplayer.R;
 
