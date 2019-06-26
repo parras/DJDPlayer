@@ -43,7 +43,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.NotificationCompat;
+import androidx.appcompat.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 

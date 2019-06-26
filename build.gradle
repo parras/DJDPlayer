@@ -51,8 +51,8 @@ android {
         minSdkVersion 21
 
         dependencies {
-            compile "com.android.support:appcompat-v7:${supportLibVersion}"
-            testCompile 'junit:junit:4.12'
+            implementation "androidx.appcompat:appcompat:1.0.0"
+            testImplementation 'junit:junit:4.12'
         }
     }
 
