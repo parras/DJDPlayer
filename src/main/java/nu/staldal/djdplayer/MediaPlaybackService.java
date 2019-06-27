@@ -31,9 +31,6 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
-import android.media.MediaMetadata;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -43,6 +40,9 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -116,7 +116,7 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
     // Delegates
 
     protected AudioManager mAudioManager;
-    protected MediaSession mSession;
+    protected MediaSessionCompat mSession;
     private SharedPreferences mPersistentState;
     private SharedPreferences mSettings;
     private final MyMediaPlayer[] mPlayers = new MyMediaPlayer[2];
@@ -229,9 +229,9 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void createMediaSession() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mSession = new MediaSession(this, getString(R.string.applabel));
-            mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-                    MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            mSession = new MediaSessionCompat(this, getString(R.string.applabel));
+            mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         }
     }
 
@@ -346,7 +346,6 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         super.onDestroy();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void releaseMediaSession() {
         mSession.release();
     }
@@ -588,7 +587,6 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         }
     };
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void activateMediaSession() {
         mSession.setActive(true);
     }
@@ -1099,15 +1097,14 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         mTrackName = null;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void updateMediaMetadata() {
-        MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder();
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, getTrackName());
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, getArtistName());
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_GENRE, getGenreName());
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, getAlbumName());
+        MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, getTrackName());
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, getArtistName());
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_GENRE, getGenreName());
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, getAlbumName());
 
-        metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART,
+        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.app_icon));
         // TODO set small icon
 
@@ -1291,21 +1288,18 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         mIsSupposedToBePlaying = false;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private boolean isMediaSessionActive() {
         return mSession.isActive();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void updateMediaSession(boolean isPlaying) {
-        PlaybackState.Builder stateBuilder = new PlaybackState.Builder()
-                .setActions(isPlaying ? PlaybackState.ACTION_PAUSE : PlaybackState.ACTION_PLAY);
-        stateBuilder.setState(isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
+        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(isPlaying ? PlaybackStateCompat.ACTION_PAUSE : PlaybackStateCompat.ACTION_PLAY);
+        stateBuilder.setState(isPlaying ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED,
                 mPlayers[mCurrentPlayer].currentPosition(), 1.0f);
         mSession.setPlaybackState(stateBuilder.build());
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void deactivateMediaSession() {
         mSession.setActive(false);
     }
