@@ -19,13 +19,11 @@ package nu.staldal.djdplayer.mobile;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaMetadataRetriever;
-import android.media.RemoteControlClient;
-import android.os.Build;
+
 import androidx.core.app.NotificationCompat;
+
 import nu.staldal.djdplayer.MediaPlaybackService;
 import nu.staldal.djdplayer.R;
 
@@ -37,8 +35,6 @@ public class MobileMediaPlaybackService extends MediaPlaybackService {
     public static final String APPWIDGETUPDATE_ACTION = "nu.staldal.djdplayer.musicservicecommand.appwidgetupdate";
 
     // Delegates
-
-    private RemoteControlClient mRemoteControlClient;
 
     @Override
     protected void enrichActionFilter(IntentFilter actionFilter) {
@@ -56,71 +52,9 @@ public class MobileMediaPlaybackService extends MediaPlaybackService {
     }
 
     @Override
-    protected void additionalCreate() {
-        mAudioManager.registerMediaButtonEventReceiver(new ComponentName(this.getPackageName(),
-                MediaButtonIntentReceiver.class.getName()));
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // does not work in Lollipop
-            setupRemoteControl();
-        }
-    }
-
-    @Override
-    protected void audioFocusGain() {
-        registerMediaButtonEventReceiverAndRemoteControl();
-    }
-
-    @Override
-    protected void audioFocusLoss() {
-        unregisterMediaButtenEventReceiverAndRemoteControl();
-    }
-
-    private void setupRemoteControl() {
-        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-        mediaButtonIntent.setComponent(new ComponentName(this.getPackageName(),
-                MediaButtonIntentReceiver.class.getName()));
-        mRemoteControlClient = new RemoteControlClient(
-                PendingIntent.getBroadcast(getApplicationContext(), 0, mediaButtonIntent, 0));
-        mRemoteControlClient.setTransportControlFlags(
-                RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
-                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-                        RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS);
-    }
-
-    @Override
     protected void extraNotifyChange(String what) {
         // Share this notification directly with our widgets
         MediaAppWidgetProvider.getInstance().notifyChange(this, what);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // does not work in Lollipop
-            updateRemoteControl();
-        }
-    }
-
-    @Override
-    protected void beforePlay() {
-        registerMediaButtonEventReceiverAndRemoteControl();
-    }
-
-    private void updateRemoteControl() {
-        mRemoteControlClient.setPlaybackState(isPlaying()
-                ? RemoteControlClient.PLAYSTATE_PLAYING
-                : RemoteControlClient.PLAYSTATE_PAUSED);
-
-        RemoteControlClient.MetadataEditor metadataEditor = mRemoteControlClient.editMetadata(true);
-        metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE, getTrackName());
-        metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, getArtistName());
-        metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, getArtistName());
-        metadataEditor.putString(MediaMetadataRetriever.METADATA_KEY_GENRE, getGenreName());
-        metadataEditor.apply();
-    }
-
-    private void registerMediaButtonEventReceiverAndRemoteControl() {
-        mAudioManager.registerMediaButtonEventReceiver(new ComponentName(getPackageName(),
-                MediaButtonIntentReceiver.class.getName()));
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // does not work in Lollipop
-            mAudioManager.registerRemoteControlClient(mRemoteControlClient);
-        }
     }
 
     @Override
@@ -135,18 +69,4 @@ public class MobileMediaPlaybackService extends MediaPlaybackService {
 
         builder.setContentIntent(pendingIntent);
     }
-
-    @Override
-    protected void additionalDestroy() {
-        unregisterMediaButtenEventReceiverAndRemoteControl();
-    }
-
-    private void unregisterMediaButtenEventReceiverAndRemoteControl() {
-        mAudioManager.unregisterMediaButtonEventReceiver(new ComponentName(this.getPackageName(),
-                MediaButtonIntentReceiver.class.getName()));
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // does not work in Lollipop
-            mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
-        }
-    }
-
 }
