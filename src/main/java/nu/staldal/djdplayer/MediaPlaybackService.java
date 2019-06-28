@@ -226,7 +226,6 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
     @SuppressWarnings("unused")
     protected void enrichActionFilter(IntentFilter actionFilter) { }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void createMediaSession() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSession = new MediaSessionCompat(this, getString(R.string.applabel));
@@ -1192,13 +1191,10 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
     @SuppressWarnings("unused")
     protected void enrichNotification(NotificationCompat.Builder builder) { }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void applyLillipopFunctionality(NotificationCompat.Builder builder) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder
-                    .setCategory(Notification.CATEGORY_TRANSPORT)
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        }
+        builder
+            .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
     }
 
     private PendingIntent getPendingIntentForAction(String action) {
