@@ -48,7 +48,7 @@ public class MyMediaPlayer {
     private SimpleExoPlayer mPlayer;
     private boolean mIsInitialized;
 
-    public MyMediaPlayer(Context context, Handler handler) {
+    public MyMediaPlayer(Context context, Handler handler, boolean skipSilence) {
         this.mContext = context;
         this.mHandler = handler;
 
@@ -56,7 +56,9 @@ public class MyMediaPlayer {
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
         mWakeLock.setReferenceCounted(false);
 
-        mPlayer = ExoPlayerFactory.newSimpleInstance(context);;
+        mPlayer = ExoPlayerFactory.newSimpleInstance(context);
+        setSkipSilence(skipSilence);
+
         // TODO acquire WakeLock and WifiLock when streaming
 
         mIsInitialized = false;
@@ -93,7 +95,6 @@ public class MyMediaPlayer {
         MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(path));
         mPlayer.prepare(videoSource);
-        mPlayer.setPlaybackParameters(new PlaybackParameters(1, 1, true));
 
         mPlayer.addListener(listener);
 
@@ -143,6 +144,10 @@ public class MyMediaPlayer {
 
     public void setVolume(float vol) {
         mPlayer.setVolume(vol);
+    }
+
+    public void setSkipSilence(boolean skip) {
+        mPlayer.setPlaybackParameters(new PlaybackParameters(1, 1, skip));
     }
 
     public int getAudioSessionId() {

@@ -17,7 +17,6 @@
 
 package nu.staldal.djdplayer;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -33,7 +32,6 @@ import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -119,6 +117,7 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
     protected MediaSessionCompat mSession;
     private SharedPreferences mPersistentState;
     private SharedPreferences mSettings;
+    private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private final MyMediaPlayer[] mPlayers = new MyMediaPlayer[2];
 
 
@@ -172,6 +171,15 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         mPersistentState = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        prefListener =
+                (sharedPreferences, key) -> {
+                    if (key.equals("skip_silence")) {
+                        for (MyMediaPlayer player : mPlayers) {
+                            player.setSkipSilence(sharedPreferences.getBoolean("skip_silence", false));
+                        }
+                    }
+                };
+        mSettings.registerOnSharedPreferenceChangeListener(prefListener);
 
         mCardId = fetchCardId();
 
@@ -182,18 +190,19 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
         registerReceiver(mUnmountReceiver, iFilter);
 
         // Needs to be done in this thread, since otherwise ApplicationContext.getPowerManager() crashes.
+        boolean skipSilence = mSettings.getBoolean(SettingsActivity.SKIP_SILENCE, false);
         mPlayers[0] = new MyMediaPlayer(this, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 handlePlayerCallback(0, msg);
             }
-        });
+        }, skipSilence);
         mPlayers[1] = new MyMediaPlayer(this, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 handlePlayerCallback(1, msg);
             }
-        });
+        }, skipSilence);
         mCurrentPlayer = 0;
         mNextPlayer = 1;
 
@@ -227,11 +236,9 @@ public abstract class MediaPlaybackService extends Service implements MediaPlayb
     protected void enrichActionFilter(IntentFilter actionFilter) { }
 
     private void createMediaSession() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mSession = new MediaSessionCompat(this, getString(R.string.applabel));
-            mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        }
+        mSession = new MediaSessionCompat(this, getString(R.string.applabel));
+        mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
     }
 
     protected void additionalCreate() { }
