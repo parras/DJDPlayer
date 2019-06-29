@@ -15,10 +15,11 @@
  */
 package nu.staldal.djdplayer;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-public class SettingsActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SettingsActivity extends AppCompatActivity {
     public static final String CLICK_ON_SONG = "clickonsong";
     public static final String SHOW_ARTISTS_TAB = "show_artists_tab";
     public static final String SHOW_ALBUMS_TAB = "show_albums_tab";
@@ -47,7 +48,7 @@ public class SettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.settings);
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
     }

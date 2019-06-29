@@ -1,60 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/behaviour">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory app:title="@string/behaviour">
         <ListPreference
-            android:key="clickonsong"
-            android:title="@string/clickonsong"
-            android:entries="@array/pref_clickonsong_entries"
-            android:entryValues="@array/pref_clickonsong_values"
-            android:defaultValue="PLAY_NEXT" />
+            app:key="clickonsong"
+            app:title="@string/clickonsong"
+            app:entries="@array/pref_clickonsong_entries"
+            app:entryValues="@array/pref_clickonsong_values"
+            app:defaultValue="PLAY_NEXT" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/tabs">
+    <PreferenceCategory app:title="@string/tabs">
         <CheckBoxPreference
-            android:key="show_artists_tab"
-            android:title="@string/show_artists_tab"
-            android:defaultValue="true" />
+            app:key="show_artists_tab"
+            app:title="@string/show_artists_tab"
+            app:defaultValue="true" />
         <CheckBoxPreference
-            android:key="show_albums_tab"
-            android:title="@string/show_albums_tab"
-            android:defaultValue="true" />
+            app:key="show_albums_tab"
+            app:title="@string/show_albums_tab"
+            app:defaultValue="true" />
         <CheckBoxPreference
-            android:key="show_genres_tab"
-            android:title="@string/show_genres_tab"
-            android:defaultValue="true" />
+            app:key="show_genres_tab"
+            app:title="@string/show_genres_tab"
+            app:defaultValue="true" />
         <CheckBoxPreference
-            android:key="show_folders_tab"
-            android:title="@string/show_folders_tab"
-            android:defaultValue="true" />
+            app:key="show_folders_tab"
+            app:title="@string/show_folders_tab"
+            app:defaultValue="true" />
         <CheckBoxPreference
-            android:key="show_playlists_tab"
-            android:title="@string/show_playlists_tab"
-            android:defaultValue="true" />
+            app:key="show_playlists_tab"
+            app:title="@string/show_playlists_tab"
+            app:defaultValue="true" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/mix">
+    <PreferenceCategory app:title="@string/mix">
         <ListPreference
-            android:key="fade_seconds"
-            android:title="@string/fade_seconds"
-            android:entries="@array/pref_duration_entries"
-            android:entryValues="@array/pref_duration_values"
-            android:defaultValue="0" />
+            app:key="fade_seconds"
+            app:title="@string/fade_seconds"
+            app:entries="@array/pref_duration_entries"
+            app:entryValues="@array/pref_duration_values"
+            app:defaultValue="0" />
         <CheckBoxPreference
-            android:key="cross_fade"
-            android:title="@string/cross_fade"
-            android:defaultValue="false" />
+            app:key="cross_fade"
+            app:title="@string/cross_fade"
+            app:defaultValue="false" />
         <CheckBoxPreference
-            android:key="skip_silence"
-            android:title="@string/skip_silence"
-            android:defaultValue="false" />
+            app:key="skip_silence"
+            app:title="@string/skip_silence"
+            app:defaultValue="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/music_folder">
-        <Preference android:title="@string/select_music_folder">
+    <PreferenceCategory app:title="@string/music_folder">
+        <Preference app:title="@string/select_music_folder">
             <intent
                 android:targetPackage="nu.staldal.djdplayer"
                 android:targetClass="nu.staldal.djdplayer.PickMusicFolderActivity" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/about">
-        <Preference android:title="@string/about">
+    <PreferenceCategory app:title="@string/about">
+        <Preference app:title="@string/about">
             <intent
                 android:targetPackage="nu.staldal.djdplayer"
                 android:targetClass="nu.staldal.djdplayer.AboutActivity" />

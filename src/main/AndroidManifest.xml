@@ -34,7 +34,8 @@
                  android:description="@string/appdescription"
                  android:allowBackup="true">
 
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SettingsActivity"
+            android:theme="@style/Theme.AppCompat"/>
 
         <activity android:name=".AboutActivity" />
 
