@@ -17,15 +17,21 @@ package nu.staldal.djdplayer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 
-import java.io.IOException;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 public class MyMediaPlayer {
     private static final String LOGTAG = "MyMediaPlayer";
@@ -38,7 +44,7 @@ public class MyMediaPlayer {
     private final Handler mHandler;
     private final PowerManager.WakeLock mWakeLock;
 
-    private MediaPlayer mMediaPlayer;
+    private SimpleExoPlayer mPlayer;
     private boolean mIsInitialized;
 
     public MyMediaPlayer(Context context, Handler handler) {
@@ -49,44 +55,31 @@ public class MyMediaPlayer {
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
         mWakeLock.setReferenceCounted(false);
 
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+        mPlayer = ExoPlayerFactory.newSimpleInstance(context);;
+        // TODO acquire WakeLock and WifiLock when streaming
 
         mIsInitialized = false;
     }
 
-    private final MediaPlayer.OnCompletionListener listener = new MediaPlayer.OnCompletionListener() {
-        public void onCompletion(MediaPlayer mp) {
-            // Acquire a temporary wakelock, since when we return from
-            // this callback the MediaPlayer will release its wakelock
-            // and allow the device to go to sleep.
-            // This temporary wakelock is released when the RELEASE_WAKELOCK
-            // message is processed, but just in case, put a timeout on it.
-            mWakeLock.acquire(30000);
-            mHandler.sendEmptyMessage(TRACK_ENDED);
-            mHandler.sendEmptyMessage(RELEASE_WAKELOCK);
-        }
-    };
-
-    private final MediaPlayer.OnErrorListener errorListener = new MediaPlayer.OnErrorListener() {
-        public boolean onError(MediaPlayer mp, int what, int extra) {
-            switch (what) {
-                case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                    Log.i(LOGTAG, "MediaPlayer died, restarting");
-                    mIsInitialized = false;
-                    mMediaPlayer.release();
-                    // Creating a new MediaPlayer and settings its wake mode does not
-                    // require the media service, so it's OK to do this now, while the
-                    // service is still being restarted
-                    mMediaPlayer = new MediaPlayer();
-                    mMediaPlayer.setWakeMode(mContext, PowerManager.PARTIAL_WAKE_LOCK);
-                    mHandler.sendMessageDelayed(mHandler.obtainMessage(SERVER_DIED), 2000);
-                    return true;
-
-                default:
-                    Log.w(LOGTAG, "MediaPlayer error: " + what + "," + extra);
-                    return false;
+    private final Player.EventListener listener = new Player.EventListener() {
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            if (playbackState == Player.STATE_ENDED) {
+                // Acquire a temporary wakelock, since when we return from
+                // this callback the ExoPlayer will release its wakelock
+                // and allow the device to go to sleep.
+                // This temporary wakelock is released when the RELEASE_WAKELOCK
+                // message is processed, but just in case, put a timeout on it.
+                mWakeLock.acquire(30000);
+                mHandler.sendEmptyMessage(TRACK_ENDED);
+                mHandler.sendEmptyMessage(RELEASE_WAKELOCK);
             }
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException e) {
+            Log.w(LOGTAG, "ExoPlayer error: " + e);
+            // TODO handle error
         }
     };
 
@@ -94,23 +87,13 @@ public class MyMediaPlayer {
      * @return true if successful, false if failed
      */
     public boolean prepare(String path) {
-        try {
-            mMediaPlayer.reset();
-            mMediaPlayer.setOnPreparedListener(null);
-            if (path.startsWith("content://")) {
-                mMediaPlayer.setDataSource(mContext, Uri.parse(path));
-            } else {
-                mMediaPlayer.setDataSource(path);
-            }
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mMediaPlayer.prepare();
-        } catch (IOException | IllegalArgumentException e) {
-            Log.w(LOGTAG, "Couldn't open audio file: " + path, e);
-            mIsInitialized = false;
-            return false;
-        }
-        mMediaPlayer.setOnCompletionListener(listener);
-        mMediaPlayer.setOnErrorListener(errorListener);
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
+                Util.getUserAgent(mContext, "DJDPlayer"));
+        MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(Uri.parse(path));
+        mPlayer.prepare(videoSource);
+
+        mPlayer.addListener(listener);
 
         Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
         i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getAudioSessionId());
@@ -128,40 +111,40 @@ public class MyMediaPlayer {
     }
 
     public boolean isPlaying() {
-        return mMediaPlayer.isPlaying();
+        return mPlayer.getPlayWhenReady() && mPlayer.getPlaybackState() == Player.STATE_READY;
     }
 
     public void start() {
-        mMediaPlayer.start();
+        mPlayer.setPlayWhenReady(true);
     }
 
     public void pause() {
-        mMediaPlayer.pause();
+        mPlayer.setPlayWhenReady(false);
     }
 
     public void stop() {
-        mMediaPlayer.reset();
+        mPlayer.stop(true);
         mIsInitialized = false;
     }
 
     public long duration() {
-        return mMediaPlayer.getDuration();
+        return mPlayer.getDuration();
     }
 
     public long currentPosition() {
-        return mMediaPlayer.getCurrentPosition();
+        return mPlayer.getCurrentPosition();
     }
 
     public void seek(long whereto) {
-        mMediaPlayer.seekTo((int)whereto);
+        mPlayer.seekTo((int)whereto);
     }
 
     public void setVolume(float vol) {
-        mMediaPlayer.setVolume(vol, vol);
+        mPlayer.setVolume(vol);
     }
 
     public int getAudioSessionId() {
-        return mMediaPlayer.getAudioSessionId();
+        return mPlayer.getAudioSessionId();
     }
 
     public void releaseWakeLock() {
@@ -179,7 +162,7 @@ public class MyMediaPlayer {
         i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mContext.getPackageName());
         mContext.sendBroadcast(i);
 
-        mMediaPlayer.release();
+        mPlayer.release();
         mWakeLock.release();
     }
 
