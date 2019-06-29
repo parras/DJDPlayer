@@ -30,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String FADE_SECONDS = "fade_seconds";
     public static final String CROSS_FADE = "cross_fade";
     public static final String SKIP_SILENCE = "skip_silence";
+    public static final String CLIPPING = "clipping";
 
     public static final String PLAYQUEUE = "queue";
     public static final String CARDID = "cardid";

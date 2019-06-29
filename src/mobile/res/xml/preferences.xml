@@ -46,6 +46,14 @@
             app:key="skip_silence"
             app:title="@string/skip_silence"
             app:defaultValue="false" />
+        <SeekBarPreference
+            app:key="clipping"
+            app:title="@string/clipping"
+            app:summary="@string/max_duration"
+            app:defaultValue="0"
+            android:max="10"
+            app:min="0"
+            app:showSeekBarValue="true" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/music_folder">
         <Preference app:title="@string/select_music_folder">

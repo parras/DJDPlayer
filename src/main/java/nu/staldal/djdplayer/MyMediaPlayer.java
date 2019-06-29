@@ -17,17 +17,22 @@ package nu.staldal.djdplayer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ClippingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -92,9 +97,25 @@ public class MyMediaPlayer {
     public boolean prepare(String path) {
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
                 Util.getUserAgent(mContext, "DJDPlayer"));
-        MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse(path));
-        mPlayer.prepare(videoSource);
+        Uri uri = Uri.parse(path);
+        MediaSource audioSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(uri);
+        int clippingMinutes = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(SettingsActivity.CLIPPING, 0);
+        if (clippingMinutes == 0)
+            mPlayer.prepare(audioSource);
+        else {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(mContext, uri);
+            String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            int durationMilliSeconds = Integer.parseInt(durationStr);
+            int middleMilliSeconds = durationMilliSeconds / 2;
+            int clippingMilliSeconds = clippingMinutes * 60 * 1000;
+            int startMilliSeconds = middleMilliSeconds - clippingMilliSeconds / 2;
+            int endMilliSeconds = middleMilliSeconds + clippingMilliSeconds / 2;
+            ClippingMediaSource clippedAudioSource = new ClippingMediaSource(audioSource,
+                    startMilliSeconds * 1000, endMilliSeconds * 1000);
+            mPlayer.prepare(clippedAudioSource);
+        }
 
         mPlayer.addListener(listener);
 
@@ -131,7 +152,13 @@ public class MyMediaPlayer {
     }
 
     public long duration() {
-        return mPlayer.getDuration();
+        long duration = mPlayer.getDuration();
+        if (duration == C.TIME_UNSET) {
+            Log.w(LOGTAG, "ExoPlayer returned unknown duration");
+            return 0;
+        }
+        else
+            return duration;
     }
 
     public long currentPosition() {

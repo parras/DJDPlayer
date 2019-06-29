@@ -296,6 +296,8 @@
     <string name="fade_seconds">Fade time</string>
     <string name="cross_fade">Cross fade</string>
     <string name="skip_silence">Skip silence</string>
+    <string name="clipping">Clip tracks</string>
+    <string name="max_duration">Max. duration in minutes (0 to disable)</string>
 
     <!-- Info -->
     <string name="title">Title</string>
