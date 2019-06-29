@@ -25,6 +25,7 @@ import android.util.Log;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -92,6 +93,7 @@ public class MyMediaPlayer {
         MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(path));
         mPlayer.prepare(videoSource);
+        mPlayer.setPlaybackParameters(new PlaybackParameters(1, 1, true));
 
         mPlayer.addListener(listener);
 
