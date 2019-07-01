@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 ** Copyright 2007, The Android Open Source Project
 **
@@ -42,11 +41,11 @@
     4 - seconds
     5 - second%60
     -->
-    <skip/>
+    <skip />
     <!-- Do not translate. Duration format for duration < 1 hour -->
-    <string translatable="false" name="durationformatshort"><xliff:g id="format">%2$d:%5$02d</xliff:g></string>
+    <string name="durationformatshort" translatable="false"><xliff:g id="format">%2$d:%5$02d</xliff:g></string>
     <!-- Do not translate. Duration format for duration >= 1 hour -->
-    <string translatable="false" name="durationformatlong"><xliff:g id="format">%1$d:%3$02d:%5$02d</xliff:g></string>
+    <string name="durationformatlong" translatable="false"><xliff:g id="format">%1$d:%3$02d:%5$02d</xliff:g></string>
 
     <!-- Menu item that deletes the currently selected song.
          The user will be prompted to confirm before deletion actually takes place -->
@@ -202,14 +201,14 @@
         <!-- message shown when one song was added -->
         <item quantity="one">1 song added to playlist</item>
         <!-- message shown when zero or more than one song was added -->
-        <item quantity="other"><xliff:g id="number" example="27">%d</xliff:g> songs added to playlist</item>
+        <item quantity="other"><xliff:g example="27" id="number">%d</xliff:g> songs added to playlist</item>
     </plurals>
     <!-- Toasts after adding song(s) to play queue -->
     <plurals name="NNNtrackstoplayqueue">
         <!-- message shown when one song was added -->
         <item quantity="one">1 song added to queue</item>
         <!-- message shown when zero or more than one song was added -->
-        <item quantity="other"><xliff:g id="number" example="27">%d</xliff:g> songs added to queue</item>
+        <item quantity="other"><xliff:g example="27" id="number">%d</xliff:g> songs added to queue</item>
     </plurals>
     <!-- Toast after selecting an empty playlist -->
     <string name="emptyplaylist">Selected playlist is empty</string>
@@ -258,7 +257,7 @@
     <string name="remove_from_playlist">Remove from playlist</string>
 
     <!-- title of contextual music search menu -->
-    <string name="mediasearch">Search for <xliff:g id="term" example="Beethoven">%s</xliff:g> using:</string>
+    <string name="mediasearch">Search for <xliff:g example="Beethoven" id="term">%s</xliff:g> using:</string>
 
     <!-- The string used to describe Music as a searchable item within system search settings. -->
     <string name="search_settings_description">Artists, albums, and tracks</string>
@@ -274,7 +273,7 @@
 
     <!-- Menu text for the item controlling the audio effects panel [CHAR LIMIT=15] -->
     <string name="effectspanel">Sound effects</string>
-    
+
     <string name="create_playlist_create_text_prompt">Playlist name</string>
 
     <string name="rename_playlist_prompt">Rename \"<xliff:g id="PLAYLIST">%s</xliff:g>\" to</string>
@@ -341,5 +340,14 @@
     <string name="by">by Mikael Ståldal</string>
     <string name="version">"version "</string>
     <string name="versionName">2.11beta2</string>
+    <string name="title_activity_google_music_login">Google Music Login</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 
 </resources>

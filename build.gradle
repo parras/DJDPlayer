@@ -42,6 +42,7 @@ android {
             implementation 'androidx.media:media:1.0.1'
             implementation 'com.google.android.exoplayer:exoplayer-core:2.10.2'
             implementation 'androidx.preference:preference:1.1.0-beta01'
+            implementation 'com.github.felixgail:gplaymusic:0.3.6'
             testImplementation 'junit:junit:4.12'
         }
     }
@@ -93,4 +94,12 @@ android {
         }
     }
 
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'com.google.android.material:material:+'
+    implementation 'androidx.annotation:annotation:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+    implementation 'androidx.lifecycle:lifecycle-extensions:+'
 }
