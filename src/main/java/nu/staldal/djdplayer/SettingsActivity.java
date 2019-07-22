@@ -15,9 +15,11 @@
  */
 package nu.staldal.djdplayer;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String CLICK_ON_SONG = "clickonsong";
@@ -52,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+
     }
 
 }

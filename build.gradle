@@ -4,7 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
     }
 
 }
@@ -42,6 +42,7 @@ android {
             implementation 'androidx.media:media:1.0.1'
             implementation 'com.google.android.exoplayer:exoplayer-core:2.10.2'
             implementation 'androidx.preference:preference:1.1.0-beta01'
+            implementation 'com.google.android.gms:play-services-auth:17.0.0'
             testImplementation 'junit:junit:4.12'
         }
     }
@@ -93,4 +94,9 @@ android {
         }
     }
 
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
 }
