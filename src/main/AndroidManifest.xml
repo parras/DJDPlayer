@@ -14,6 +14,7 @@
         android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- To delete music files, and manipulate play lists -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"

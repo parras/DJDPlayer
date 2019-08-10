@@ -1,28 +1,31 @@
 package nu.staldal.djdplayer;
 
-import android.accounts.AccountManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
+import com.github.felixgail.gplaymusic.util.TokenProvider;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+
+import svarzee.gps.gpsoauth.AuthToken;
+import svarzee.gps.gpsoauth.Gpsoauth;
+
+import static android.provider.Settings.Secure.ANDROID_ID;
 
 public class GoogleMusicOAuthActivity extends AppCompatActivity {
 
     private static final String GOOGLE_MUSIC_TOKEN = "GoogleMusicToken";
     private static final String GOOGLE_ACCOUNT_NAME = "GoogleAccountName";
     private static final String TAG = GoogleMusicOAuthActivity.class.getSimpleName();
-    private static final int PICK_ACCOUNT_REQUEST = 1;
     private TextView statusText;
     private SharedPreferences sharedPref;
 
@@ -30,7 +33,7 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_music_oauth);
-        statusText = (TextView) findViewById(R.id.google_music_auth_status);
+        statusText = findViewById(R.id.google_music_auth_status);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         String accountName = sharedPref.getString(GOOGLE_ACCOUNT_NAME, null);
         if (accountName != null)
@@ -38,53 +41,47 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
     }
 
     public void performOAuth (View view) {
-        Intent intent = AccountManager.newChooseAccountIntent(null, null,
-                new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE  }, true,
-                "Pick Google Music account", null,
-                null, null);
-        startActivityForResult(intent, PICK_ACCOUNT_REQUEST);
-    }
+        EditText username = findViewById(R.id.username);
+        EditText password = findViewById(R.id.password);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Check which request we're responding to
-        if (requestCode == PICK_ACCOUNT_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                Log.d(TAG, "Account selected: " + accountName);
-                new PerformOAuth().execute(accountName);
-            }
-        }
+        new PerformOAuth().execute(username.getText().toString(), password.getText().toString());
     }
 
 
-    private class PerformOAuth extends AsyncTask<String, Void, String> {
-        private String mAuthToken;
+    private class PerformOAuth extends AsyncTask<String, Void, AuthToken> {
+        private String username;
 
-        protected String doInBackground(String... params) {
-            String accountName = params[0];
+        protected AuthToken doInBackground(String... params) {
+            username = params[0];
+            String password = params[1];
+            AuthToken token = null;
             try {
-                mAuthToken = GoogleAuthUtil.getToken(getApplicationContext(), accountName, "oauth2:https://www.googleapis.com/auth/skyjam");
-                Log.d(TAG, "Token retrieved: " + mAuthToken);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(GOOGLE_ACCOUNT_NAME, accountName);
-                editor.putString(GOOGLE_MUSIC_TOKEN, mAuthToken);
-                editor.commit();
-
+                token = TokenProvider.provideToken(username, password, ANDROID_ID);
+                Log.d(TAG, "Token retrieved: " + token);
             } catch (IOException e) {
                 Log.e(TAG, "Network is busy. Try again later...", e);
-            } catch (GoogleAuthException e) {
-                Log.e(TAG, "Fatal auth exception", e);
+            } catch (Gpsoauth.TokenRequestFailed e) {
+                Log.e(TAG, "Token request failed", e);
             }
-            return mAuthToken;
+            return token;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(AuthToken token) {
+            super.onPostExecute(token);
+            if (token != null) {
+                Gson gson = new Gson();
+                String jsonToken = gson.toJson(token);
 
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(GOOGLE_ACCOUNT_NAME, username);
+                editor.putString(GOOGLE_MUSIC_TOKEN, jsonToken);
+                editor.commit();
+
+                statusText.setText("Logged in as " + username);
+            }
+            else
+                statusText.setText("Authentication failed for " + username);
         }
     }
 }
