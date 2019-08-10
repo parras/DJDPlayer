@@ -16,19 +16,33 @@
 package nu.staldal.djdplayer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import static android.app.Activity.RESULT_OK;
+import static nu.staldal.djdplayer.SettingsActivity.GOOGLE_ACCOUNT_NAME;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     private static final int PERFORM_AUTH_REQUEST = 1;
 
+    private Preference gmusic;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
+        gmusic = findPreference("gmusic");
+
+        // Check GMusic auth status
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String accountName = sharedPref.getString(GOOGLE_ACCOUNT_NAME, null);
+        if (accountName != null)
+            gmusic.setSummary("Already logged in as " + accountName);
+        else
+            gmusic.setSummary("Not logged in");
 
         // Handle GMusic login
         Preference loginButton = findPreference("login");
@@ -37,7 +51,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             startActivityForResult(launchAuth, PERFORM_AUTH_REQUEST);
             return true;
         });
-
     }
 
     @Override
@@ -46,10 +59,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (requestCode == PERFORM_AUTH_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
-
-                // Do something with the contact here (bigger example below)
+                String username = data.getStringExtra("username");
+                gmusic.setSummary("Logged in as " + username);
             }
         }
     }

@@ -34,6 +34,9 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String SKIP_SILENCE = "skip_silence";
     public static final String CLIPPING = "clipping";
 
+    public static final String GOOGLE_MUSIC_TOKEN = "GoogleMusicToken";
+    public static final String GOOGLE_ACCOUNT_NAME = "GoogleAccountName";
+
     public static final String PLAYQUEUE = "queue";
     public static final String CARDID = "cardid";
     public static final String CURPOS = "curpos";

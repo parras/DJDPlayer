@@ -62,7 +62,7 @@
                 android:targetClass="nu.staldal.djdplayer.PickMusicFolderActivity" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory app:title="@string/google_music">
+    <PreferenceCategory app:title="@string/google_music" android:key="gmusic">
         <Preference app:title="@string/login"
             app:key="login">
         </Preference>

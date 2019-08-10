@@ -1,6 +1,7 @@
 package nu.staldal.djdplayer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.github.felixgail.gplaymusic.util.TokenProvider;
 import com.google.gson.Gson;
@@ -20,11 +22,11 @@ import svarzee.gps.gpsoauth.AuthToken;
 import svarzee.gps.gpsoauth.Gpsoauth;
 
 import static android.provider.Settings.Secure.ANDROID_ID;
+import static nu.staldal.djdplayer.SettingsActivity.GOOGLE_ACCOUNT_NAME;
+import static nu.staldal.djdplayer.SettingsActivity.GOOGLE_MUSIC_TOKEN;
 
 public class GoogleMusicOAuthActivity extends AppCompatActivity {
 
-    private static final String GOOGLE_MUSIC_TOKEN = "GoogleMusicToken";
-    private static final String GOOGLE_ACCOUNT_NAME = "GoogleAccountName";
     private static final String TAG = GoogleMusicOAuthActivity.class.getSimpleName();
     private TextView statusText;
     private SharedPreferences sharedPref;
@@ -34,7 +36,7 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_music_oauth);
         statusText = findViewById(R.id.google_music_auth_status);
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String accountName = sharedPref.getString(GOOGLE_ACCOUNT_NAME, null);
         if (accountName != null)
             statusText.setText("Already logged in as " + accountName);
@@ -69,6 +71,7 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(AuthToken token) {
             super.onPostExecute(token);
+
             if (token != null) {
                 Gson gson = new Gson();
                 String jsonToken = gson.toJson(token);
@@ -79,6 +82,11 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
                 editor.commit();
 
                 statusText.setText("Logged in as " + username);
+
+                Intent result = new Intent();
+                result.putExtra("username", username);
+                setResult(RESULT_OK, result);
+                finish();
             }
             else
                 statusText.setText("Authentication failed for " + username);
