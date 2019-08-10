@@ -99,4 +99,5 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:+'
     implementation 'androidx.constraintlayout:constraintlayout:+'
+    implementation 'com.github.felixgail:gplaymusic:0.3.6'
 }

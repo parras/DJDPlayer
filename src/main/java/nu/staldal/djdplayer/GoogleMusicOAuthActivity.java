@@ -53,6 +53,7 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                Log.d(TAG, "Account selected: " + accountName);
                 new PerformOAuth().execute(accountName);
             }
         }
