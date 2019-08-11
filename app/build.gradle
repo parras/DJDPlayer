@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion '29.0.0'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId "nu.staldal.djdplayer"
+        targetSdkVersion 29
+        minSdkVersion 21
+
+        dependencies {
+        }
+    }
+
+    if (project.hasProperty("KEY_STORE")) {
+        signingConfigs {
+            release {
+                storeFile file(KEY_STORE)
+                storePassword KEY_STORE_PASSWORD
+                keyAlias KEY_ALIAS
+                keyPassword KEY_PASSWORD
+            }
+        }
+    } else {
+        signingConfigs {
+            release {
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.pro'
+            debuggable false
+            signingConfig signingConfigs.release
+        }
+        preview {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.pro'
+            debuggable true
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.pro'
+            debuggable true
+            // signing debug
+        }
+    }
+
+    flavorDimensions "device"
+    productFlavors {
+        mobile {
+            minSdkVersion 16
+        }
+    }
+
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.0.2"
+    implementation 'androidx.media:media:1.0.1'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.2'
+    implementation 'androidx.preference:preference:1.1.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+    implementation 'com.github.felixgail:gplaymusic:0.3.6'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    testImplementation 'junit:junit:4.12'
+}

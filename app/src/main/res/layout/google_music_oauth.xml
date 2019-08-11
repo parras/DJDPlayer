@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GoogleMusicOAuthActivity">
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="81dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="235dp"
+        android:onClick="performOAuth"
+        android:text="@string/login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
+    <TextView
+        android:id="@+id/google_music_auth_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="243dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginRight="9dp"
+        android:layout_marginBottom="24dp"
+        android:text="Ready to log into Google Music"
+        app:layout_constraintBottom_toTopOf="@+id/username"
+        app:layout_constraintEnd_toEndOf="@+id/username"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="99dp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@+id/login_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/google_music_auth_status" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
