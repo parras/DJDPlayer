@@ -23,6 +23,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import nu.staldal.djdplayer.gmusic.GoogleMusicOAuthActivity;
+
 import static android.app.Activity.RESULT_OK;
 import static nu.staldal.djdplayer.SettingsActivity.GOOGLE_ACCOUNT_NAME;
 

@@ -599,6 +599,7 @@ public class MusicBrowserActivity extends Activity implements ServiceConnection,
         setupTab(actionBar, SettingsActivity.SHOW_GENRES_TAB, R.string.genres_menu, GenreFragment.class);
         setupTab(actionBar, SettingsActivity.SHOW_FOLDERS_TAB, R.string.folders_menu, FolderFragment.class);
         setupTab(actionBar, SettingsActivity.SHOW_PLAYLISTS_TAB, R.string.playlists_menu, PlaylistFragment.class);
+        setupTab(actionBar, SettingsActivity.SHOW_PLAYLISTS_TAB, R.string.playlists_menu, PlaylistFragment.class);
 
         viewPager.setAdapter(new CategoryPageAdapter(getFragmentManager()));
     }

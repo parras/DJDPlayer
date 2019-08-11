@@ -1,6 +1,5 @@
-package nu.staldal.djdplayer;
+package nu.staldal.djdplayer.gmusic;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -18,6 +17,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
+import nu.staldal.djdplayer.R;
 import svarzee.gps.gpsoauth.AuthToken;
 import svarzee.gps.gpsoauth.Gpsoauth;
 
