@@ -58,13 +58,6 @@ android {
         }
     }
 
-    flavorDimensions "device"
-    productFlavors {
-        mobile {
-            minSdkVersion 16
-        }
-    }
-
 }
 
 dependencies {
