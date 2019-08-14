@@ -28,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String SHOW_GENRES_TAB = "show_genres_tab";
     public static final String SHOW_FOLDERS_TAB = "show_folders_tab";
     public static final String SHOW_PLAYLISTS_TAB = "show_playlists_tab";
+    public static final String SHOW_GOOGLE_MUSIC_TAB = "show_google_music_tab";
     public static final String MUSIC_FOLDER = "music_folder";
     public static final String FADE_SECONDS = "fade_seconds";
     public static final String CROSS_FADE = "cross_fade";

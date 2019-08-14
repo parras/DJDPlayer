@@ -36,6 +36,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
@@ -48,6 +50,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import nu.staldal.djdplayer.gmusic.GoogleMusicFragment;
+import nu.staldal.djdplayer.gmusic.GoogleMusicPlaylistFragment;
 import nu.staldal.djdplayer.provider.MusicContract;
 import nu.staldal.djdplayer.provider.MusicProvider;
 import nu.staldal.djdplayer.ui.WithSectionMenu;
@@ -55,7 +59,7 @@ import nu.staldal.djdplayer.ui.WithSectionMenu;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-public class MusicBrowserActivity extends Activity implements ServiceConnection,
+public class MusicBrowserActivity extends FragmentActivity implements ServiceConnection,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOGTAG = "MusicBrowserActivity";
@@ -599,7 +603,7 @@ public class MusicBrowserActivity extends Activity implements ServiceConnection,
         setupTab(actionBar, SettingsActivity.SHOW_GENRES_TAB, R.string.genres_menu, GenreFragment.class);
         setupTab(actionBar, SettingsActivity.SHOW_FOLDERS_TAB, R.string.folders_menu, FolderFragment.class);
         setupTab(actionBar, SettingsActivity.SHOW_PLAYLISTS_TAB, R.string.playlists_menu, PlaylistFragment.class);
-        setupTab(actionBar, SettingsActivity.SHOW_PLAYLISTS_TAB, R.string.playlists_menu, PlaylistFragment.class);
+        setupTab(actionBar, SettingsActivity.SHOW_GOOGLE_MUSIC_TAB, R.string.google_music, GoogleMusicFragment.class);
 
         viewPager.setAdapter(new CategoryPageAdapter(getFragmentManager()));
     }

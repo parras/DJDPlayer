@@ -73,12 +73,9 @@ public class GoogleMusicOAuthActivity extends AppCompatActivity {
             super.onPostExecute(token);
 
             if (token != null) {
-                Gson gson = new Gson();
-                String jsonToken = gson.toJson(token);
-
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(GOOGLE_ACCOUNT_NAME, username);
-                editor.putString(GOOGLE_MUSIC_TOKEN, jsonToken);
+                editor.putString(GOOGLE_MUSIC_TOKEN, token.getToken());
                 editor.commit();
 
                 statusText.setText("Logged in as " + username);

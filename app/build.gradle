@@ -52,7 +52,8 @@ android {
         debug {
             minifyEnabled false
             shrinkResources false
-            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.pro'
+            proguardFile 'proguard.pro'
             debuggable true
             // signing debug
         }
@@ -67,6 +68,8 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:+'
     implementation 'com.github.felixgail:gplaymusic:0.3.6'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.7.1'
     testImplementation 'junit:junit:4.12'
 }
